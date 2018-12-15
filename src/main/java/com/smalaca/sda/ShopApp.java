@@ -41,11 +41,7 @@ public class ShopApp {
         PreparedStatement preparedStatement = null;
 
         try {
-            preparedStatement = connection.prepareStatement(
-                    "UPDATE PRODUCTS " +
-                    "SET DESCRIPTION = ? WHERE PRODUCT_ID = ?"
-            );
-            updateProducts(preparedStatement);
+            updateProducts(preparedStatement, connection);
 
             statement = connection.createStatement();
             insertProduct(statement);
@@ -77,8 +73,13 @@ public class ShopApp {
         }
     }
 
-    private static void updateProducts(PreparedStatement preparedStatement) {
+    private static void updateProducts(PreparedStatement preparedStatement, Connection connection) {
         try {
+            preparedStatement = connection.prepareStatement(
+                    "UPDATE PRODUCTS " +
+                    "SET DESCRIPTION = ? WHERE PRODUCT_ID = ?"
+            );
+
             preparedStatement.setString(1, "bla bla bla");
             preparedStatement.setInt(2, 1);
 
