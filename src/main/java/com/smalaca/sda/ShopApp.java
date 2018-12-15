@@ -2,12 +2,14 @@ package com.smalaca.sda;
 
 import com.mysql.jdbc.Driver;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 public class ShopApp {
     static final String DB_URL =
@@ -39,13 +41,21 @@ public class ShopApp {
         //query execution
         Statement statement = null;
         PreparedStatement preparedStatement = null;
+        CallableStatement callableStatement = null;
 
         try {
-            updateProducts(preparedStatement, connection);
+            callableStatement = connection.prepareCall(
+                    "{call get_product_name(?, ?)}");
+            callableStatement.setInt(1, 13);
+            callableStatement.registerOutParameter(2, Types.CHAR);
+            callableStatement.execute();
 
-            statement = connection.createStatement();
-            insertProduct(statement);
-            findAllProducts(statement);
+            System.out.println(callableStatement.getString(2));
+//            updateProducts(preparedStatement, connection);
+//
+//            statement = connection.createStatement();
+//            insertProduct(statement);
+//            findAllProducts(statement);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
