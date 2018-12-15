@@ -75,6 +75,8 @@ public class ShopApp {
 
     private static void updateProducts(PreparedStatement preparedStatement, Connection connection) {
         try {
+            connection.setAutoCommit(false);
+
             preparedStatement = connection.prepareStatement(
                     "UPDATE PRODUCTS " +
                     "SET DESCRIPTION = ? WHERE PRODUCT_ID = ?"
@@ -85,8 +87,14 @@ public class ShopApp {
 
             int updated = preparedStatement.executeUpdate();
 
+            connection.commit();
             System.out.println(updated + " updated products.");
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
         }
     }
