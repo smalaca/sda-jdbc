@@ -1,9 +1,12 @@
 package com.smalaca.sda.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -22,9 +25,14 @@ public class Product {
 
     private String description;
 
-    public Product(String name, String catalogNumber) {
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "price_id")
+    private Price price;
+
+    public Product(String name, String catalogNumber, Price price) {
         this.name = name;
         this.catalogNumber = catalogNumber;
+        this.price = price;
     }
 
     private Product() {}
@@ -38,6 +46,7 @@ public class Product {
         return "Product{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", price='" + price + '\'' +
                 ", catalogNumber='" + catalogNumber + '\'' +
                 ", description='" + description + '\'' +
                 '}';

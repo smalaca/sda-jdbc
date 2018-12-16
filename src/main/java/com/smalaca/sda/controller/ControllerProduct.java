@@ -1,6 +1,7 @@
 package com.smalaca.sda.controller;
 
 import com.smalaca.sda.controller.proxy.ProxyId;
+import com.smalaca.sda.domain.Price;
 import com.smalaca.sda.domain.Product;
 import com.smalaca.sda.hibernate.transaction.TransactionalDbOperation;
 import com.smalaca.sda.repository.mysql.MySqlRepositoryProduct;
@@ -19,7 +20,8 @@ public class ControllerProduct {
     }
 
     public Integer create(String name, String catalogNumber) {
-        Product product = new Product(name, catalogNumber);
+        Product product = new Product(
+                name, catalogNumber, new Price(13, "PLN"));
         ProxyId productId = new ProxyId();
 
         transactionalDbOperation.execute(() -> {

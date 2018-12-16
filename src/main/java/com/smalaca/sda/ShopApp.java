@@ -26,7 +26,7 @@ public class ShopApp {
         product = controllerProduct.find(productId);
         System.out.println(product);
 
-        controllerProduct.delete(productId);
+//        controllerProduct.delete(productId);
 
         controllerProduct.findAll()
                 .forEach(System.out::println);

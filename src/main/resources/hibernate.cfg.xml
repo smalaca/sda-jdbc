@@ -15,5 +15,6 @@
         <property name="show_sql">true</property>
 
         <mapping class="com.smalaca.sda.domain.Product"/>
+        <mapping class="com.smalaca.sda.domain.Price"/>
     </session-factory>
 </hibernate-configuration>
