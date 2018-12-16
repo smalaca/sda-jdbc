@@ -3,6 +3,7 @@ package com.smalaca.sda.controller;
 import com.smalaca.sda.controller.proxy.ProxyId;
 import com.smalaca.sda.domain.Product;
 import com.smalaca.sda.hibernate.transaction.SafeDbOperation;
+import com.smalaca.sda.hibernate.transaction.TransactionalDbOperation;
 import com.smalaca.sda.repository.mysql.MySqlRepositoryProduct;
 import org.hibernate.Session;
 
@@ -47,15 +48,6 @@ public class ControllerProduct {
     }
 
     private void safeOperation(SafeDbOperation callback) {
-        try {
-            session.getTransaction().begin();
-
-            callback.execute();
-
-            session.getTransaction().commit();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            session.getTransaction().rollback();
-        }
+        new TransactionalDbOperation(session).execute(callback);
     }
 }
