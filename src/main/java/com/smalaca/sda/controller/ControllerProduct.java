@@ -36,4 +36,21 @@ public class ControllerProduct {
     public Product find(Integer productId) {
         return mySqlRepositoryProduct.findById(productId);
     }
+
+    public void changeDescription(
+            Integer productId, String description) {
+        Product product = find(productId);
+        product.changeDescription(description);
+
+        try {
+            session.getTransaction().begin();
+
+            mySqlRepositoryProduct.update(product);
+
+            session.getTransaction().commit();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            session.getTransaction().rollback();
+        }
+    }
 }

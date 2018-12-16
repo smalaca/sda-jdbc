@@ -17,4 +17,8 @@ public class MySqlRepositoryProduct {
     public Product findById(Integer productId) {
         return session.get(Product.class, productId);
     }
+
+    public void update(Product product) {
+        session.update(product);
+    }
 }

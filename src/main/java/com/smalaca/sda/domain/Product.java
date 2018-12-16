@@ -29,6 +29,10 @@ public class Product {
 
     private Product() {}
 
+    public void changeDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "Product{" +

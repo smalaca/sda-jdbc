@@ -17,12 +17,17 @@ public class ShopApp {
         ControllerProduct controllerProduct =
                 new ControllerProduct(session, mySqlRepositoryProduct);
 
-        String name = "laptop";
-        String catalogNumber = "QW3RTY";
         Integer productId = controllerProduct
-                .create(name, catalogNumber);
+                .create("playstation 5", "QW3RTY-ABC");
 
         Product product = controllerProduct.find(productId);
+        System.out.println(product);
+
+        String description = "fresh and funky";
+        controllerProduct.changeDescription(
+                productId, description);
+
+        product = controllerProduct.find(productId);
         System.out.println(product);
 
         session.close();
