@@ -2,6 +2,7 @@ package com.smalaca.sda.controller;
 
 import com.smalaca.sda.controller.proxy.ProxyId;
 import com.smalaca.sda.domain.Currency;
+import com.smalaca.sda.domain.Part;
 import com.smalaca.sda.domain.Price;
 import com.smalaca.sda.domain.Product;
 import com.smalaca.sda.hibernate.transaction.TransactionalDbOperation;
@@ -23,6 +24,8 @@ public class ControllerProduct {
     public Integer create(String name, String catalogNumber) {
         Product product = new Product(
                 name, catalogNumber, new Price(13, Currency.USD));
+        product.add(new Part("first"));
+        product.add(new Part("second"));
         ProxyId productId = new ProxyId();
 
         transactionalDbOperation.execute(() -> {

@@ -9,8 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -39,6 +42,9 @@ public class Product {
     @JoinColumn(name = "price_id")
     private Price price;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Part> parties = new ArrayList<>();
+
     public Product(String name, String catalogNumber, Price price) {
         this.name = name;
         this.catalogNumber = catalogNumber;
@@ -54,12 +60,22 @@ public class Product {
 
     @Override
     public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        parties.forEach(
+                part -> stringBuilder.append(part.toString()));
+
         return "Product{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price='" + price + '\'' +
                 ", catalogNumber='" + catalogNumber + '\'' +
                 ", description='" + description + '\'' +
+                ", parties='" + stringBuilder.toString() + '\'' +
                 '}';
+    }
+
+    public void add(Part part) {
+        parties.add(part);
+        part.set(this);
     }
 }
