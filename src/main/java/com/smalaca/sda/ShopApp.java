@@ -1,6 +1,6 @@
 package com.smalaca.sda;
 
-import com.smalaca.sda.domain.Product;
+import com.smalaca.sda.controller.ControllerProduct;
 import com.smalaca.sda.hibernate.HibernateSessionRegistry;
 import com.smalaca.sda.repository.mysql.MySqlRepositoryProduct;
 import org.hibernate.Session;
@@ -11,28 +11,20 @@ public class ShopApp {
                 .getSessionFactory()
                 .openSession();
 
+        MySqlRepositoryProduct mySqlRepositoryProduct =
+                new MySqlRepositoryProduct(session);
+        ControllerProduct controllerProduct =
+                new ControllerProduct(session, mySqlRepositoryProduct);
 
         // save product -- start
         String name = "laptop";
         String catalogNumber = "QW3RTY";
-        Product product = new Product(name, catalogNumber);
+        Integer productId = controllerProduct
+                .create(name, catalogNumber);
 
-        try {
-            session.getTransaction().begin();
-
-            Integer productId =
-                    new MySqlRepositoryProduct(session)
-                        .save(product);
-
-            System.out.println(productId);
-            session.getTransaction().commit();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            session.getTransaction().rollback();
-        }
+        System.out.println(productId);
 
         session.close();
-
         HibernateSessionRegistry.shutdown();
     }
 }
