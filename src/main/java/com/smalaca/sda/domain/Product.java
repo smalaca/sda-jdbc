@@ -1,7 +1,10 @@
 package com.smalaca.sda.domain;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -23,7 +26,14 @@ public class Product {
     @Column(name = "catalog_number")
     private String catalogNumber;
 
-    private String description;
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(
+                name = "longDescription",
+                column = @Column(name = "long_description")
+        )
+    })
+    private Description description;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "price_id")
@@ -38,7 +48,8 @@ public class Product {
     private Product() {}
 
     public void changeDescription(String description) {
-        this.description = description;
+        this.description = new Description(
+                description, description);
     }
 
     @Override
