@@ -2,6 +2,7 @@ package com.smalaca.sda;
 
 import com.smalaca.sda.domain.Product;
 import com.smalaca.sda.hibernate.HibernateSessionRegistry;
+import com.smalaca.sda.repository.mysql.MySqlRepositoryProduct;
 import org.hibernate.Session;
 
 public class ShopApp {
@@ -10,17 +11,20 @@ public class ShopApp {
                 .getSessionFactory()
                 .openSession();
 
+
+        // save product -- start
+        String name = "laptop";
+        String catalogNumber = "QW3RTY";
+        Product product = new Product(name, catalogNumber);
+
         try {
             session.getTransaction().begin();
 
-            String name = "laptop";
-            String catalogNumber = "QW3RTY";
-            Product product = new Product(name, catalogNumber);
-
-            Integer productId = (Integer) session.save(product);
+            Integer productId =
+                    new MySqlRepositoryProduct(session)
+                        .save(product);
 
             System.out.println(productId);
-
             session.getTransaction().commit();
         } catch (Exception exception) {
             exception.printStackTrace();
