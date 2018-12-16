@@ -1,13 +1,13 @@
 package com.smalaca.sda.controller;
 
+import com.smalaca.sda.hibernate.transaction.TransactionalDbOperation;
 import com.smalaca.sda.repository.mysql.MySqlRepositoryProduct;
 import org.hibernate.Session;
 
 public class ControllerProductFactory {
     public ControllerProduct create(Session session) {
-        MySqlRepositoryProduct mySqlRepositoryProduct =
-                new MySqlRepositoryProduct(session);
         return new ControllerProduct(
-                session, mySqlRepositoryProduct);
+                new MySqlRepositoryProduct(session),
+                new TransactionalDbOperation(session));
     }
 }
