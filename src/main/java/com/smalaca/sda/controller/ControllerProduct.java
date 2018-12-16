@@ -32,4 +32,8 @@ public class ControllerProduct {
 
         return id;
     }
+
+    public Product find(Integer productId) {
+        return mySqlRepositoryProduct.findById(productId);
+    }
 }

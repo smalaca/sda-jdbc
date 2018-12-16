@@ -13,4 +13,8 @@ public class MySqlRepositoryProduct {
     public Integer save(Product product) {
         return (Integer) session.save(product);
     }
+
+    public Product findById(Integer productId) {
+        return session.get(Product.class, productId);
+    }
 }

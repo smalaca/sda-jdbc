@@ -1,6 +1,7 @@
 package com.smalaca.sda;
 
 import com.smalaca.sda.controller.ControllerProduct;
+import com.smalaca.sda.domain.Product;
 import com.smalaca.sda.hibernate.HibernateSessionRegistry;
 import com.smalaca.sda.repository.mysql.MySqlRepositoryProduct;
 import org.hibernate.Session;
@@ -16,13 +17,13 @@ public class ShopApp {
         ControllerProduct controllerProduct =
                 new ControllerProduct(session, mySqlRepositoryProduct);
 
-        // save product -- start
         String name = "laptop";
         String catalogNumber = "QW3RTY";
         Integer productId = controllerProduct
                 .create(name, catalogNumber);
 
-        System.out.println(productId);
+        Product product = controllerProduct.find(productId);
+        System.out.println(product);
 
         session.close();
         HibernateSessionRegistry.shutdown();
