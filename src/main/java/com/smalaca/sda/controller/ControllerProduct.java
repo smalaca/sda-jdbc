@@ -1,6 +1,8 @@
 package com.smalaca.sda.controller;
 
+import com.smalaca.sda.controller.proxy.ProxyId;
 import com.smalaca.sda.domain.Product;
+import com.smalaca.sda.hibernate.transaction.SafeDbOperation;
 import com.smalaca.sda.repository.mysql.MySqlRepositoryProduct;
 import org.hibernate.Session;
 
@@ -17,20 +19,13 @@ public class ControllerProduct {
 
     public Integer create(String name, String catalogNumber) {
         Product product = new Product(name, catalogNumber);
-        Integer id = null;
+        ProxyId productId = new ProxyId();
 
-        try {
-            session.getTransaction().begin();
+        safeOperation(() -> {
+            productId.set(mySqlRepositoryProduct.save(product));
+        });
 
-            id = mySqlRepositoryProduct.save(product);
-
-            session.getTransaction().commit();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            session.getTransaction().rollback();
-        }
-
-        return id;
+        return productId.value();
     }
 
     public Product find(Integer productId) {
@@ -42,25 +37,20 @@ public class ControllerProduct {
         Product product = find(productId);
         product.changeDescription(description);
 
-        try {
-            session.getTransaction().begin();
-
-            mySqlRepositoryProduct.update(product);
-
-            session.getTransaction().commit();
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            session.getTransaction().rollback();
-        }
+        safeOperation(() -> mySqlRepositoryProduct.update(product));
     }
 
     public void delete(Integer productId) {
         Product product = find(productId);
 
+        safeOperation(() -> mySqlRepositoryProduct.delete(product));
+    }
+
+    private void safeOperation(SafeDbOperation callback) {
         try {
             session.getTransaction().begin();
 
-            mySqlRepositoryProduct.delete(product);
+            callback.execute();
 
             session.getTransaction().commit();
         } catch (Exception exception) {
