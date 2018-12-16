@@ -27,8 +27,9 @@ public class ShopApp {
         System.out.println(product);
 
         controllerProduct.delete(productId);
-        product = controllerProduct.find(productId);
-        System.out.println(product);
+
+        controllerProduct.findAll()
+                .forEach(System.out::println);
 
         session.close();
         HibernateSessionRegistry.shutdown();

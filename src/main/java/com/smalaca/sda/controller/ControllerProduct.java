@@ -5,6 +5,8 @@ import com.smalaca.sda.domain.Product;
 import com.smalaca.sda.hibernate.transaction.TransactionalDbOperation;
 import com.smalaca.sda.repository.mysql.MySqlRepositoryProduct;
 
+import java.util.List;
+
 public class ControllerProduct {
     private final MySqlRepositoryProduct mySqlRepositoryProduct;
     private final TransactionalDbOperation transactionalDbOperation;
@@ -47,5 +49,9 @@ public class ControllerProduct {
         transactionalDbOperation.execute(() -> {
             mySqlRepositoryProduct.delete(product);
         });
+    }
+
+    public List<Product> findAll() {
+        return mySqlRepositoryProduct.findAll();
     }
 }

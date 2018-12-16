@@ -3,6 +3,8 @@ package com.smalaca.sda.repository.mysql;
 import com.smalaca.sda.domain.Product;
 import org.hibernate.Session;
 
+import java.util.List;
+
 public class MySqlRepositoryProduct {
     private final Session session;
 
@@ -24,5 +26,9 @@ public class MySqlRepositoryProduct {
 
     public void delete(Product product) {
         session.delete(product);
+    }
+
+    public List<Product> findAll() {
+        return session.createQuery("From Product").list();
     }
 }
