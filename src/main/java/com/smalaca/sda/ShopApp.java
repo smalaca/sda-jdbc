@@ -1,9 +1,9 @@
 package com.smalaca.sda;
 
 import com.smalaca.sda.controller.ControllerProduct;
+import com.smalaca.sda.controller.ControllerProductFactory;
 import com.smalaca.sda.domain.Product;
 import com.smalaca.sda.hibernate.HibernateSessionRegistry;
-import com.smalaca.sda.repository.mysql.MySqlRepositoryProduct;
 import org.hibernate.Session;
 
 public class ShopApp {
@@ -12,10 +12,7 @@ public class ShopApp {
                 .getSessionFactory()
                 .openSession();
 
-        MySqlRepositoryProduct mySqlRepositoryProduct =
-                new MySqlRepositoryProduct(session);
-        ControllerProduct controllerProduct =
-                new ControllerProduct(session, mySqlRepositoryProduct);
+        ControllerProduct controllerProduct = new ControllerProductFactory().create(session);
 
         Integer productId = controllerProduct
                 .create("playstation 5", "QW3RTY-ABC");
