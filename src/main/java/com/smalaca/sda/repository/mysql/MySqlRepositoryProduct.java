@@ -21,4 +21,8 @@ public class MySqlRepositoryProduct {
     public void update(Product product) {
         session.update(product);
     }
+
+    public void delete(Product product) {
+        session.delete(product);
+    }
 }

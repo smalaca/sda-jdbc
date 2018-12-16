@@ -23,10 +23,13 @@ public class ShopApp {
         Product product = controllerProduct.find(productId);
         System.out.println(product);
 
-        String description = "fresh and funky";
         controllerProduct.changeDescription(
-                productId, description);
+                productId, "fresh and funky");
 
+        product = controllerProduct.find(productId);
+        System.out.println(product);
+
+        controllerProduct.delete(productId);
         product = controllerProduct.find(productId);
         System.out.println(product);
 
