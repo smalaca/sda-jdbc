@@ -9,7 +9,7 @@ public class ControllerProduct {
     private final MySqlRepositoryProduct mySqlRepositoryProduct;
     private final TransactionalDbOperation transactionalDbOperation;
 
-    public ControllerProduct(
+    ControllerProduct(
             MySqlRepositoryProduct mySqlRepositoryProduct,
             TransactionalDbOperation transactionalDbOperation1) {
         this.mySqlRepositoryProduct = mySqlRepositoryProduct;
