@@ -17,5 +17,6 @@
         <mapping class="com.smalaca.sda.domain.Product"/>
         <mapping class="com.smalaca.sda.domain.Price"/>
         <mapping class="com.smalaca.sda.domain.Part"/>
+        <mapping class="com.smalaca.sda.domain.Person"/>
     </session-factory>
 </hibernate-configuration>
