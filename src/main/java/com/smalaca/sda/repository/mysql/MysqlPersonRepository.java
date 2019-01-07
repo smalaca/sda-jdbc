@@ -5,6 +5,7 @@ import com.smalaca.sda.domain.PersonRepository;
 import org.hibernate.Session;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class MysqlPersonRepository implements PersonRepository {
     private final Session session;
@@ -15,17 +16,22 @@ public class MysqlPersonRepository implements PersonRepository {
 
     @Override
     public Integer save(Person person) {
-        session.getTransaction().begin();
-        Integer result = (Integer) session.save(person);
-        session.getTransaction().commit();
-        return result;
+        return transactional(() -> (Integer) session.save(person));
     }
 
     @Override
     public void delete(Person person) {
+        transactional(() -> session.delete(person));
+    }
+
+    private void transactional(Transactional transactional) {
         session.getTransaction().begin();
-        session.delete(person);
+        transactional.invoke();
         session.getTransaction().commit();
+    }
+
+    private interface Transactional {
+        void invoke();
     }
 
     @Override
@@ -40,9 +46,14 @@ public class MysqlPersonRepository implements PersonRepository {
 
     @Override
     public int deleteAll() {
+        return transactional(() -> session.createQuery("DELETE FROM Person").executeUpdate());
+    }
+
+    private <T> T transactional(Supplier<T> supplier) {
         session.getTransaction().begin();
-        int removed = session.createQuery("DELETE FROM Person").executeUpdate();
+        T result = supplier.get();
         session.getTransaction().commit();
-        return removed;
+
+        return result;
     }
 }
