@@ -57,6 +57,16 @@ public class QueryLanguageTest extends HibernateTestsSuite {
     }
 
     @Test
+    public void shouldReturnPersonByName() {
+        givenPersons();
+
+        List<Person> result = aQuery("FROM Person WHERE name = '" + PETER_PARKER + "'").list();
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).aBusinessCard().name()).isEqualTo(PETER_PARKER);
+    }
+
+    @Test
     public void shouldDeleteAllPersons() {
         givenPersons();
 
