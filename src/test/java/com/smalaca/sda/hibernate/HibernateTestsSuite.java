@@ -2,6 +2,7 @@ package com.smalaca.sda.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,6 +25,11 @@ public class HibernateTestsSuite {
     @After
     public void closeSession() {
         session.close();
+    }
+
+
+    protected Query aQuery(String hql) {
+        return aSession().createQuery(hql);
     }
 
     protected Session aSession() {

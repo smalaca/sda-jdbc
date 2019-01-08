@@ -110,9 +110,9 @@ public class QueryLanguageTest extends HibernateTestsSuite {
     public void shouldDeleteAllPersons() {
         givenPersons();
 
-        aSession().getTransaction().begin();
+        beginTransaction();
         int removed = aQuery("DELETE FROM Person").executeUpdate();
-        aSession().getTransaction().commit();
+        commitTransaction();
 
         assertThat(removed).isEqualTo(3);
         assertThat(personRepository.findAll()).isEmpty();
@@ -124,12 +124,12 @@ public class QueryLanguageTest extends HibernateTestsSuite {
         givenPerson(MARY_JANE_WATSON);
         Person gwenStacy = givenPerson(GWEN_STACY);
 
-        aSession().getTransaction().begin();
+        beginTransaction();
         Query query = aQuery("UPDATE Person SET mail = :mail WHERE id = :id");
         query.setParameter("id", gwenStacy.id());
         query.setParameter("mail", GWEN_STACY_MAIL);
         int result = query.executeUpdate();
-        aSession().getTransaction().commit();
+        commitTransaction();
 
         aSession().refresh(gwenStacy);
 
@@ -137,14 +137,18 @@ public class QueryLanguageTest extends HibernateTestsSuite {
         assertThat(gwenStacy.aBusinessCard().mail()).isEqualTo(GWEN_STACY_MAIL);
     }
 
+    private void commitTransaction() {
+        aSession().getTransaction().commit();
+    }
+
+    private void beginTransaction() {
+        aSession().getTransaction().begin();
+    }
+
     private void givenPersons() {
         givenPerson(PETER_PARKER);
         givenPerson(MARY_JANE_WATSON);
         givenPerson(GWEN_STACY);
-    }
-
-    private Query aQuery(String hql) {
-        return aSession().createQuery(hql);
     }
 
     private Person givenPerson(String name) {
