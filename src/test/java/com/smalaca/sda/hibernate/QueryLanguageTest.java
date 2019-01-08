@@ -13,6 +13,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class QueryLanguageTest extends HibernateTestsSuite {
+    private static final String GWEN_STACY = "Gwen Stacy";
+    private static final String MARY_JANE_WATSON = "Mary Jane Watson";
+    private static final String PETER_PARKER = "Peter Parker";
+
     private PersonRepository personRepository;
 
     @Before
@@ -34,9 +38,9 @@ public class QueryLanguageTest extends HibernateTestsSuite {
 
     @Test
     public void shouldReturnAllPersons() {
-        Person person1 = givenPerson("Peter Parker");
-        Person person2 = givenPerson("Mary Jane Watson");
-        Person person3 = givenPerson("Gwen Stacy");
+        Person person1 = givenPerson(PETER_PARKER);
+        Person person2 = givenPerson(MARY_JANE_WATSON);
+        Person person3 = givenPerson(GWEN_STACY);
 
         List<Person> list = aQuery("FROM Person").list();
 
@@ -44,10 +48,21 @@ public class QueryLanguageTest extends HibernateTestsSuite {
     }
 
     @Test
+    public void shouldReturnAllPersonsName() {
+        givenPerson(PETER_PARKER);
+        givenPerson(MARY_JANE_WATSON);
+        givenPerson(GWEN_STACY);
+
+        List<String> list = aQuery("SELECT P.name FROM Person P ").list();
+
+        assertThat(list).containsExactlyInAnyOrder(PETER_PARKER, MARY_JANE_WATSON, GWEN_STACY);
+    }
+
+    @Test
     public void shouldDeleteAllPersons() {
-        givenPerson("Peter Parker");
-        givenPerson("Mary Jane Watson");
-        givenPerson("Gwen Stacy");
+        givenPerson(PETER_PARKER);
+        givenPerson(MARY_JANE_WATSON);
+        givenPerson(GWEN_STACY);
 
         aSession().getTransaction().begin();
         String hql = "DELETE FROM Person";
