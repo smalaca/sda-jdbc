@@ -48,6 +48,17 @@ public class QueryLanguageTest extends HibernateTestsSuite {
     }
 
     @Test
+    public void shouldReturnAllPersonsOrderedByName() {
+        Person person1 = givenPerson(PETER_PARKER);
+        Person person2 = givenPerson(MARY_JANE_WATSON);
+        Person person3 = givenPerson(GWEN_STACY);
+
+        List<Person> list = aQuery("FROM Person ORDER BY name").list();
+
+        assertThat(list).containsExactly(person3, person2, person1);
+    }
+
+    @Test
     public void shouldReturnAllPersonsName() {
         givenPersons();
 
@@ -61,6 +72,18 @@ public class QueryLanguageTest extends HibernateTestsSuite {
         givenPersons();
 
         List<Person> result = aQuery("FROM Person WHERE name = '" + PETER_PARKER + "'").list();
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).aBusinessCard().name()).isEqualTo(PETER_PARKER);
+    }
+
+    @Test
+    public void shouldReturnPersonByNameWithNamedParameter() {
+        givenPersons();
+
+        Query query = aQuery("FROM Person WHERE name = :name");
+        query.setParameter("name", PETER_PARKER);
+        List<Person> result = query.list();
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).aBusinessCard().name()).isEqualTo(PETER_PARKER);
