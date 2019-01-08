@@ -26,5 +26,13 @@ public class Person {
         return new BusinessCard(name, phone, mail);
     }
 
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public int id() {
+        return id;
+    }
+
     private Person() {}
 }

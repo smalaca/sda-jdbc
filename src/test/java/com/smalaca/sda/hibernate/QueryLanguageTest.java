@@ -16,6 +16,7 @@ public class QueryLanguageTest extends HibernateTestsSuite {
     private static final String GWEN_STACY = "Gwen Stacy";
     private static final String MARY_JANE_WATSON = "Mary Jane Watson";
     private static final String PETER_PARKER = "Peter Parker";
+    private static final String GWEN_STACY_MAIL = "gwen.stacy@bugle.com";
 
     private PersonRepository personRepository;
 
@@ -38,24 +39,24 @@ public class QueryLanguageTest extends HibernateTestsSuite {
 
     @Test
     public void shouldReturnAllPersons() {
-        Person person1 = givenPerson(PETER_PARKER);
-        Person person2 = givenPerson(MARY_JANE_WATSON);
-        Person person3 = givenPerson(GWEN_STACY);
+        Person peterParker = givenPerson(PETER_PARKER);
+        Person maryJaneWatson = givenPerson(MARY_JANE_WATSON);
+        Person gwenStacy = givenPerson(GWEN_STACY);
 
         List<Person> list = aQuery("FROM Person").list();
 
-        assertThat(list).containsExactlyInAnyOrder(person1, person2, person3);
+        assertThat(list).containsExactlyInAnyOrder(peterParker, maryJaneWatson, gwenStacy);
     }
 
     @Test
     public void shouldReturnAllPersonsOrderedByName() {
-        Person person1 = givenPerson(PETER_PARKER);
-        Person person2 = givenPerson(MARY_JANE_WATSON);
-        Person person3 = givenPerson(GWEN_STACY);
+        Person peterParker = givenPerson(PETER_PARKER);
+        Person maryJaneWatson = givenPerson(MARY_JANE_WATSON);
+        Person gwenStacy = givenPerson(GWEN_STACY);
 
         List<Person> list = aQuery("FROM Person ORDER BY name").list();
 
-        assertThat(list).containsExactly(person3, person2, person1);
+        assertThat(list).containsExactly(gwenStacy, maryJaneWatson, peterParker);
     }
 
     @Test
@@ -110,12 +111,30 @@ public class QueryLanguageTest extends HibernateTestsSuite {
         givenPersons();
 
         aSession().getTransaction().begin();
-        String hql = "DELETE FROM Person";
-        int removed = aQuery(hql).executeUpdate();
+        int removed = aQuery("DELETE FROM Person").executeUpdate();
         aSession().getTransaction().commit();
 
         assertThat(removed).isEqualTo(3);
         assertThat(personRepository.findAll()).isEmpty();
+    }
+
+    @Test
+    public void shouldUpdatePersonEmail() {
+        givenPerson(PETER_PARKER);
+        givenPerson(MARY_JANE_WATSON);
+        Person gwenStacy = givenPerson(GWEN_STACY);
+
+        aSession().getTransaction().begin();
+        Query query = aQuery("UPDATE Person SET mail = :mail WHERE id = :id");
+        query.setParameter("id", gwenStacy.id());
+        query.setParameter("mail", GWEN_STACY_MAIL);
+        int result = query.executeUpdate();
+        aSession().getTransaction().commit();
+
+        aSession().refresh(gwenStacy);
+
+        assertThat(result).isEqualTo(1);
+        assertThat(gwenStacy.aBusinessCard().mail()).isEqualTo(GWEN_STACY_MAIL);
     }
 
     private void givenPersons() {
