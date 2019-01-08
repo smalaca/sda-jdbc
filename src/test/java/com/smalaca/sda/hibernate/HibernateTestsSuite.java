@@ -28,11 +28,11 @@ public class HibernateTestsSuite {
     }
 
 
-    protected Query aQuery(String hql) {
+    Query aQuery(String hql) {
         return aSession().createQuery(hql);
     }
 
-    protected Session aSession() {
+    Session aSession() {
         return session;
     }
 

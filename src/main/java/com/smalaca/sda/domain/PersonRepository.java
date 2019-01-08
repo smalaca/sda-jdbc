@@ -9,7 +9,7 @@ public interface PersonRepository {
 
     Person find(Integer id);
 
-    List findAll();
+    List<Person> findAll();
 
     int deleteAll();
 }

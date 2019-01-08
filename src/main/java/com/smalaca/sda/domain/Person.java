@@ -30,6 +30,10 @@ public class Person {
         this.mail = mail;
     }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public int id() {
         return id;
     }
