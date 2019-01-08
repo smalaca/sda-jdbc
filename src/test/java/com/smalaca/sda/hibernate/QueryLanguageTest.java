@@ -49,9 +49,7 @@ public class QueryLanguageTest extends HibernateTestsSuite {
 
     @Test
     public void shouldReturnAllPersonsName() {
-        givenPerson(PETER_PARKER);
-        givenPerson(MARY_JANE_WATSON);
-        givenPerson(GWEN_STACY);
+        givenPersons();
 
         List<String> list = aQuery("SELECT P.name FROM Person P ").list();
 
@@ -60,9 +58,7 @@ public class QueryLanguageTest extends HibernateTestsSuite {
 
     @Test
     public void shouldDeleteAllPersons() {
-        givenPerson(PETER_PARKER);
-        givenPerson(MARY_JANE_WATSON);
-        givenPerson(GWEN_STACY);
+        givenPersons();
 
         aSession().getTransaction().begin();
         String hql = "DELETE FROM Person";
@@ -71,6 +67,12 @@ public class QueryLanguageTest extends HibernateTestsSuite {
 
         assertThat(removed).isEqualTo(3);
         assertThat(personRepository.findAll()).isEmpty();
+    }
+
+    private void givenPersons() {
+        givenPerson(PETER_PARKER);
+        givenPerson(MARY_JANE_WATSON);
+        givenPerson(GWEN_STACY);
     }
 
     private Query aQuery(String hql) {
