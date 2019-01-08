@@ -59,6 +59,22 @@ public class QueryLanguageTest extends HibernateTestsSuite {
     }
 
     @Test
+    public void shouldReturnListOfAmountOfPersonsWithTheSameName() {
+        givenPersons();
+        givenPerson(PETER_PARKER);
+        givenPerson(PETER_PARKER);
+        givenPerson(MARY_JANE_WATSON);
+        givenPerson(GWEN_STACY);
+
+        List<PersonNames> list = aQuery("SELECT count(*) AS amount, P.name FROM Person P GROUP BY P.name ORDER BY P.name")
+                .setResultTransformer(new PersonNamesTransformer())
+                .list();
+
+        assertThat(list).hasSize(3);
+        assertThat(list).containsExactly(new PersonNames(2, GWEN_STACY), new PersonNames(2, MARY_JANE_WATSON), new PersonNames(3, PETER_PARKER));
+    }
+
+    @Test
     public void shouldReturnAllPersonsName() {
         givenPersons();
 
