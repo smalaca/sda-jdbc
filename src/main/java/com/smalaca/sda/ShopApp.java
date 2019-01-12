@@ -1,12 +1,17 @@
 package com.smalaca.sda;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Projections;
 import com.smalaca.sda.mongodb.MongoClientConnectivity;
 import com.smalaca.sda.mongodb.MongoCollections;
 import org.bson.Document;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static java.time.LocalTime.now;
 
@@ -21,34 +26,24 @@ public class ShopApp {
 //        collections.createCollection("membershipCard");
 
         MongoCollection<Document> membershipCard = collections.getCollection("membershipCard");
+        MongoCollection<Document> books = collections.getCollection("books");
 
-        membershipCard.insertMany(Arrays.asList(
-                aMemebershipCard(
-                        "Sebastian", "Malaca", Arrays.asList("id1", "id2", "id3", "id4"), "13"),
-                aMemebershipCard(
-                        "Otto", "Octabvius", Arrays.asList("id1", "id3", "id4"), "2")
-                        .append("vip", true),
-                aMemebershipCard(
-                        "Harry", "Osborn", Arrays.asList("id2", "id3", "id4"), "3")
-                        .append("payment", 69.13)
-                        .append("vip", true),
-                aMemebershipCard(
-                        "Norman", "Osborn", Arrays.asList(), "123")
-                        .append("payment", 691.3)
-                        .append("vip", false),
-                aMemebershipCard(
-                        "May", "Parker", Arrays.asList("id1", "id2", "id3"), "2"),
-                aMemebershipCard(
-                        "Ben", "Parker", Arrays.asList("id3", "id4"), "98"),
-                aMemebershipCard(
-                        "Peter", "Parker", Arrays.asList("id1", "id2"), "1322"),
-                aMemebershipCard(
-                        "Mary Jane", "Watson", Arrays.asList("id1", "id3", "id4"), "767"),
-                aMemebershipCard(
-                        "Gwen", "Stacy", Arrays.asList("id1", "id2"), "79")
-                        .append("payment", 1000)
-                        .append("vip", true)
-        ));
+        Map<String, String> booksId = new HashMap<>();
+        Set<String> fakeIds = new HashSet<>();
+
+        FindIterable<Document> cards = membershipCard
+                .find()
+                .projection(Projections.fields(Projections.include("books"), Projections.exclude("_id")));
+
+        for (Document existingBook : cards) {
+            List<String> ids = (List<String>) existingBook.get("books");
+            fakeIds.addAll(ids);
+        }
+
+        // DUPLICATES :)
+        System.out.println(fakeIds);
+
+        System.out.println("---------------------");
 
         for (Document existingBook : membershipCard.find()) {
             System.out.println(existingBook);
