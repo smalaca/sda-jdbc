@@ -2,7 +2,9 @@ package com.smalaca.sda;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Updates;
 import com.smalaca.sda.mongodb.MongoClientConnectivity;
 import com.smalaca.sda.mongodb.MongoCollections;
 import org.bson.Document;
@@ -52,7 +54,19 @@ public class ShopApp {
             booksId.put(iterator.next(), document.get("_id").toString());
         }
 
-        System.out.println(booksId);
+        for (Map.Entry<String, String> ids : booksId.entrySet()) {
+            String fakeId = ids.getKey();
+            String realId = ids.getValue();
+
+            membershipCard.updateMany(
+                    Filters.in("books", fakeId),
+                    Updates.addToSet("books", realId)
+            );
+            membershipCard.updateMany(
+                    Filters.in("books", fakeId),
+                    Updates.pull("books", fakeId)
+            );
+        }
 
         System.out.println("---------------------");
 
