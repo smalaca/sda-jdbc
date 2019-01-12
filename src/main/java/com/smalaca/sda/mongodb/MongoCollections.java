@@ -8,21 +8,29 @@ import org.bson.Document;
 
 public class MongoCollections {
     private final MongoClient mongoClient;
+    private MongoDatabase database;
 
     public MongoCollections(MongoClientConnectivity mongoClientConnectivity) {
         mongoClient = mongoClientConnectivity.getMongoClient();
     }
 
     public MongoCollection<Document> getCollection(String name) {
-        MongoDatabase library = mongoClient.getDatabase("library");
-        return library.getCollection(name);
+        return aDatabase().getCollection(name);
     }
 
     public void createCollection(String name) {
-        mongoClient.getDatabase("library").createCollection(name);
+        aDatabase().createCollection(name);
     }
 
     public MongoIterable<String> collections() {
-        return mongoClient.getDatabase("library").listCollectionNames();
+        return aDatabase().listCollectionNames();
+    }
+
+    private MongoDatabase aDatabase() {
+        if (database == null) {
+            database = mongoClient.getDatabase("library");
+        }
+
+        return database;
     }
 }
