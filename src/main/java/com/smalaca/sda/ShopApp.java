@@ -9,6 +9,7 @@ import org.bson.Document;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,12 +24,9 @@ public class ShopApp {
 
         MongoCollections collections = new MongoCollections(mongoClientConnectivity);
 
-//        collections.createCollection("membershipCard");
-
         MongoCollection<Document> membershipCard = collections.getCollection("membershipCard");
         MongoCollection<Document> books = collections.getCollection("books");
 
-        Map<String, String> booksId = new HashMap<>();
         Set<String> fakeIds = new HashSet<>();
 
         FindIterable<Document> cards = membershipCard
@@ -40,8 +38,21 @@ public class ShopApp {
             fakeIds.addAll(ids);
         }
 
-        // DUPLICATES :)
-        System.out.println(fakeIds);
+        Map<String, String> booksId = new HashMap<>();
+
+        FindIterable<Document> documents = books
+                .find()
+                .limit(fakeIds.size())
+                .projection(
+                    Projections.fields(Projections.include("_id"))
+                );
+
+        Iterator<String> iterator = fakeIds.iterator();
+        for (Document document : documents) {
+            booksId.put(iterator.next(), document.get("_id").toString());
+        }
+
+        System.out.println(booksId);
 
         System.out.println("---------------------");
 
