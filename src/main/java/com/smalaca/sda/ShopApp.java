@@ -1,10 +1,14 @@
 package com.smalaca.sda;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.smalaca.sda.domain.BookFactory;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 import com.smalaca.sda.mongodb.MongoClientConnectivity;
 import com.smalaca.sda.mongodb.MongoCollections;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.Arrays;
 
@@ -16,25 +20,24 @@ public class ShopApp {
 
         MongoCollection<Document> books = new MongoCollections(mongoClientConnectivity).getCollection("books");
 
-        BookFactory bookFactory = new BookFactory();
+        Bson criteria = Filters.in("categories", Arrays.asList("software development"));
 
-        books.insertMany(Arrays.asList(
-                bookFactory.create(
-                        "Zbrodnia i Kara",
-                        "Fiodor Dostojewski",
-                        Arrays.asList("code quality", "design")
-                ),
-                bookFactory.create(
-                        "JUnit",
-                        "Ktoś mądry",
-                        Arrays.asList("code quality", "software development")
-                ),
-                bookFactory.create(
-                        "Kubuś Puchatek",
-                        "Christopher XXX",
-                        Arrays.asList("software development")
+        FindIterable<Document> documents = books
+                .find(criteria)
+                .sort(Sorts.orderBy(
+                        Sorts.ascending("author"),
+                        Sorts.ascending("title"))
                 )
-        ));
+                .projection(
+                        Projections.fields(
+                                Projections.exclude("author", "title")));
+
+        for (Document document : documents) {
+            System.out.println(document);
+        }
+
+        System.out.println("----------------------------------");
+        System.out.println("----------------------------------");
 
         for (Document existingBook : books.find()) {
             System.out.println(existingBook);
